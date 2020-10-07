@@ -1,7 +1,7 @@
 import os
-from sqlalchemy import Column, String, Integer, create_engine
+from sqlalchemy import Column, String, Integer, DateTime, create_engine
 from flask_sqlalchemy import SQLAlchemy
-import json
+# from flask_migrate import Migrate
 
 postgres_username = os.environ.get('POSTGRES_USERNAME')
 postgres_password = os.environ.get('POSTGRES_PASSWORD')
@@ -17,14 +17,15 @@ def setup_db(app, database_path=database_path):
   db.app = app
   db.init_app(app)
   db.create_all()
+  # migrate = Migrate(app, db)
 
 class Actor(db.Model):
   __tablename__ = 'actors'
 
   id = Column(Integer, primary_key=True)
-  name = Column(String)
-  age = Column(Integer)
-  gender = Column(String)
+  name = Column(String, nullable=False)
+  age = Column(Integer, nullable=False)
+  gender = Column(String, nullable=False)
   # TODO: movies
 
   def __init__(self, name, age, gender):
@@ -50,3 +51,15 @@ class Actor(db.Model):
       'age': self.age,
       'gender': self.gender
     }
+
+class Movie(db.Model):
+  __tablename__ = 'movies'
+
+  id = db.Column(Integer, primary_key=True)
+  title = db.Column(String, unique=True)
+  release_date = db.Column(DateTime(), nullable=False)
+  #TODO: Actors
+
+  def __init__(self, title, release_date):
+    self.title = title
+    self.release_date = release_date 
