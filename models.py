@@ -25,7 +25,7 @@ class Actor(db.Model):
   id = Column(Integer, primary_key=True)
   name = Column(String, nullable=False)
   age = Column(Integer, nullable=False)
-  gender = Column(String, nullable=False)
+  gender = Column(String, nullable=False) #TODO: regex
   # TODO: movies
 
   def __init__(self, name, age, gender):
