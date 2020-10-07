@@ -1,5 +1,5 @@
 import os
-from sqlalchemy import Column, String, Integer, DateTime, create_engine
+from sqlalchemy import Column, String, Integer, Date, create_engine
 from flask_sqlalchemy import SQLAlchemy
 # from flask_migrate import Migrate
 
@@ -57,9 +57,27 @@ class Movie(db.Model):
 
   id = db.Column(Integer, primary_key=True)
   title = db.Column(String, unique=True)
-  release_date = db.Column(DateTime(), nullable=False)
+  release_date = db.Column(Date(), nullable=False)
   #TODO: Actors
+
+  def insert(self):
+    db.session.add(self)
+    db.session.commit()
+
+  def update(self):
+    db.session.commit()
+
+  def delete(self):
+    db.session.delete(self)
+    db.session.commit()
 
   def __init__(self, title, release_date):
     self.title = title
-    self.release_date = release_date 
+    self.release_date = release_date
+
+  def format(self):
+    return {
+      'id': self.id,
+      'title': self.title,
+      'release_date': self.release_date
+    }
