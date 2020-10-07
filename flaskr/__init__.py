@@ -4,7 +4,6 @@ from flask_sqlalchemy import SQLAlchemy
 
 from models import setup_db, Actor, Movie
 
-
 def create_app(test_config=None):
     app = Flask(__name__)
     setup_db(app)
@@ -38,7 +37,7 @@ def create_app(test_config=None):
         return jsonify({
             'success': True,
             'actor': actor.format()
-        }), 200
+        }), 201
 
     @app.route('/actors/<int:id>', methods=['PATCH'])
     def update_actor(id):
@@ -100,14 +99,14 @@ def create_app(test_config=None):
         form = request.get_json()
         # TODO: validate form
         release_date = datetime.strptime(form.get('release_date'), '%Y-%m-%d')
-        print(release_date)
+
         movie = Movie(form.get('title'), release_date)
         movie.insert()
         # TODO: Check if inserted
         return jsonify({
             'success': True,
             'movie': movie.format()
-        }), 200
+        }), 201
 
     @app.route('/movies/<int:id>', methods=['PATCH'])
     def update_movie(id):
