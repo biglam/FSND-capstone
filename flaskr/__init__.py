@@ -32,6 +32,13 @@ def create_app(test_config=None):
         form = request.get_json()
         # TODO: validate form
         actor = Actor(form.get('name'), form.get('age'), form.get('gender'))
+
+        if (form.get('movies')):
+            for movie_id in form.get('movies'):
+                movie = Movie.query.get(movie_id)
+                if movie:
+                    actor.movies.append(movie)
+
         actor.insert()
         # TODO: Check if inserted
         return jsonify({
@@ -101,6 +108,13 @@ def create_app(test_config=None):
         release_date = datetime.strptime(form.get('release_date'), '%Y-%m-%d')
 
         movie = Movie(form.get('title'), release_date)
+
+        if (form.get('actors')):
+            for actor_id in form.get('actors'):
+                actor = Actor.query.get(actor_id)
+                if actor:
+                    movie.movies.append(actor)
+
         movie.insert()
         # TODO: Check if inserted
         return jsonify({
@@ -142,4 +156,59 @@ def create_app(test_config=None):
             'deleted_id': movie.id
         })
 
+    # Add/remove actors to/from movies
+
+    @app.route('/movies/<int:movie_id>/<int:actor_id>', methods=['POST'])
+    def add_actor_to_movie(movie_id, actor_id):
+        movie = Movie.query.get(movie_id)
+        actor = Actor.query.get(actor_id)
+
+        movie.actors.append(actor)
+        movie.update()
+
+        return jsonify({
+            'success': True,
+            'movie': movie.format()
+        })
+
+    @app.route('/movies/<int:movie_id>/<int:actor_id>', methods=['DELETE'])
+    def remove_actor_from_movie(movie_id, actor_id):
+        movie = Movie.query.get(movie_id)
+        actor = Actor.query.get(actor_id)
+
+        movie.actors.remove(actor)
+        movie.update()
+
+        return jsonify({
+            'success': True,
+            'movie': movie.format()
+        })
+
+        # Add/remove movies to/from actors
+
+    @app.route('/actors/<int:actor_id>/<int:movie_id>', methods=['POST'])
+    def add_movie_to_actor(movie_id, actor_id):
+        movie = Movie.query.get(movie_id)
+        actor = Actor.query.get(actor_id)
+
+        actor.movies.append(movie)
+        actor.update()
+
+        return jsonify({
+            'success': True,
+            'actor': actor.format()
+        })
+
+    @app.route('/actors/<int:actor_id>/<int:movie_id>', methods=['DELETE'])
+    def remove_movie_from_actors(movie_id, actor_id):
+        movie = Movie.query.get(movie_id)
+        actor = Actor.query.get(actor_id)
+
+        actor.movies.remove(movie)
+        actor.update()
+
+        return jsonify({
+            'success': True,
+            'actor': actor.format()
+        })
     return app

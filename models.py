@@ -20,6 +20,10 @@ def setup_db(app, database_path=database_path):
     # db.create_all()
     migrate = Migrate(app, db)
 
+actor_movies = db.Table('actor_movies',
+    Column('actor_id', db.Integer, db.ForeignKey('actors.id'), primary_key=True),
+    Column('movie_id', db.Integer, db.ForeignKey('movies.id'), primary_key=True)
+)
 
 class Actor(db.Model):
     __tablename__ = 'actors'
@@ -28,8 +32,7 @@ class Actor(db.Model):
     name = Column(String, nullable=False)
     age = Column(Integer, nullable=False)
     gender = Column(String, nullable=False)  # TODO: regex
-
-    # TODO: movies
+    movies = db.relationship('Movie', secondary=actor_movies, backref=db.backref('movies'))
 
     def __init__(self, name, age, gender):
         self.name = name
@@ -52,7 +55,14 @@ class Actor(db.Model):
             'id': self.id,
             'name': self.name,
             'age': self.age,
-            'gender': self.gender
+            'gender': self.gender,
+            'movies': [movie.short_format() for movie in self.movies]
+        }
+
+    def short_format(self):
+        return {
+            'id': self.id,
+            'name': self.name
         }
 
 
@@ -62,6 +72,7 @@ class Movie(db.Model):
     id = db.Column(Integer, primary_key=True)
     title = db.Column(String, nullable=False, unique=True)
     release_date = db.Column(Date(), nullable=False)
+    actors = db.relationship('Actor', secondary=actor_movies, backref=db.backref('actors'))
 
     # TODO: Actors
 
@@ -84,5 +95,12 @@ class Movie(db.Model):
         return {
             'id': self.id,
             'title': self.title,
-            'release_date': self.release_date
+            'release_date': self.release_date,
+            'actors': [actor.short_format() for actor in self.actors]
+        }
+
+    def short_format(self):
+        return {
+            'id': self.id,
+            'title': self.title
         }

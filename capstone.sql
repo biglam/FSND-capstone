@@ -21,6 +21,18 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: actor_movies; Type: TABLE; Schema: public; Owner: lam
+--
+
+CREATE TABLE public.actor_movies (
+    actor_id integer NOT NULL,
+    movie_id integer NOT NULL
+);
+
+
+ALTER TABLE public.actor_movies OWNER TO lam;
+
+--
 -- Name: actors; Type: TABLE; Schema: public; Owner: lam
 --
 
@@ -57,13 +69,24 @@ ALTER SEQUENCE public.actors_id_seq OWNED BY public.actors.id;
 
 
 --
+-- Name: alembic_version; Type: TABLE; Schema: public; Owner: lam
+--
+
+CREATE TABLE public.alembic_version (
+    version_num character varying(32) NOT NULL
+);
+
+
+ALTER TABLE public.alembic_version OWNER TO lam;
+
+--
 -- Name: movies; Type: TABLE; Schema: public; Owner: lam
 --
 
 CREATE TABLE public.movies (
     id integer NOT NULL,
-    title character varying,
-    release_date timestamp without time zone NOT NULL
+    title character varying NOT NULL,
+    release_date date NOT NULL
 );
 
 
@@ -106,12 +129,38 @@ ALTER TABLE ONLY public.movies ALTER COLUMN id SET DEFAULT nextval('public.movie
 
 
 --
+-- Data for Name: actor_movies; Type: TABLE DATA; Schema: public; Owner: lam
+--
+
+COPY public.actor_movies (actor_id, movie_id) FROM stdin;
+1	2
+1	3
+2	1
+2	2
+4	1
+4	2
+4	4
+\.
+
+
+--
 -- Data for Name: actors; Type: TABLE DATA; Schema: public; Owner: lam
 --
 
 COPY public.actors (id, name, age, gender) FROM stdin;
-3	jim	50	male
-2	billy	50	male
+1	jim	50	male
+2	john	21	male
+3	jenny	24	female
+4	anna	60	female
+\.
+
+
+--
+-- Data for Name: alembic_version; Type: TABLE DATA; Schema: public; Owner: lam
+--
+
+COPY public.alembic_version (version_num) FROM stdin;
+df9a9fc0e62f
 \.
 
 
@@ -120,9 +169,10 @@ COPY public.actors (id, name, age, gender) FROM stdin;
 --
 
 COPY public.movies (id, title, release_date) FROM stdin;
-1	Foobar	2000-01-01 00:00:00
-4	Foobar2	2000-01-01 00:00:00
-6	Foobarrf3	2000-02-01 00:00:00
+1	movie 1	2000-02-01
+2	movie 2	2002-02-01
+3	movie 3	1980-02-21
+4	xmas movie	2020-12-25
 \.
 
 
@@ -130,14 +180,22 @@ COPY public.movies (id, title, release_date) FROM stdin;
 -- Name: actors_id_seq; Type: SEQUENCE SET; Schema: public; Owner: lam
 --
 
-SELECT pg_catalog.setval('public.actors_id_seq', 3, true);
+SELECT pg_catalog.setval('public.actors_id_seq', 4, true);
 
 
 --
 -- Name: movies_id_seq; Type: SEQUENCE SET; Schema: public; Owner: lam
 --
 
-SELECT pg_catalog.setval('public.movies_id_seq', 6, true);
+SELECT pg_catalog.setval('public.movies_id_seq', 4, true);
+
+
+--
+-- Name: actor_movies actor_movies_pkey; Type: CONSTRAINT; Schema: public; Owner: lam
+--
+
+ALTER TABLE ONLY public.actor_movies
+    ADD CONSTRAINT actor_movies_pkey PRIMARY KEY (actor_id, movie_id);
 
 
 --
@@ -146,6 +204,14 @@ SELECT pg_catalog.setval('public.movies_id_seq', 6, true);
 
 ALTER TABLE ONLY public.actors
     ADD CONSTRAINT actors_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: alembic_version alembic_version_pkc; Type: CONSTRAINT; Schema: public; Owner: lam
+--
+
+ALTER TABLE ONLY public.alembic_version
+    ADD CONSTRAINT alembic_version_pkc PRIMARY KEY (version_num);
 
 
 --
@@ -162,6 +228,22 @@ ALTER TABLE ONLY public.movies
 
 ALTER TABLE ONLY public.movies
     ADD CONSTRAINT movies_title_key UNIQUE (title);
+
+
+--
+-- Name: actor_movies actor_movies_actor_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: lam
+--
+
+ALTER TABLE ONLY public.actor_movies
+    ADD CONSTRAINT actor_movies_actor_id_fkey FOREIGN KEY (actor_id) REFERENCES public.actors(id);
+
+
+--
+-- Name: actor_movies actor_movies_movie_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: lam
+--
+
+ALTER TABLE ONLY public.actor_movies
+    ADD CONSTRAINT actor_movies_movie_id_fkey FOREIGN KEY (movie_id) REFERENCES public.movies(id);
 
 
 --
