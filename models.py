@@ -1,8 +1,7 @@
 import os
 from sqlalchemy import Column, String, Integer, Date, create_engine
 from flask_sqlalchemy import SQLAlchemy
-
-# from flask_migrate import Migrate
+from flask_migrate import Migrate
 
 postgres_username = os.environ.get('POSTGRES_USERNAME')
 postgres_password = os.environ.get('POSTGRES_PASSWORD')
@@ -18,8 +17,8 @@ def setup_db(app, database_path=database_path):
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
-    db.create_all()
-    # migrate = Migrate(app, db)
+    # db.create_all()
+    migrate = Migrate(app, db)
 
 
 class Actor(db.Model):
@@ -61,7 +60,7 @@ class Movie(db.Model):
     __tablename__ = 'movies'
 
     id = db.Column(Integer, primary_key=True)
-    title = db.Column(String, unique=True)
+    title = db.Column(String, nullable=False, unique=True)
     release_date = db.Column(Date(), nullable=False)
 
     # TODO: Actors
