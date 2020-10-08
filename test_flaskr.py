@@ -189,6 +189,112 @@ class MovieActorsTestCase(unittest.TestCase):
         self.assertEquals(data['success'], True)
         self.assertEquals(len(data['actor']['movies']), 2)
 
+    # Error handling
+
+    def test_page_not_found(self):
+        response = self.client().get('/fakepage')
+        data = json.loads(response.data)
+
+        self.assertEquals(response.status_code, 404)
+        self.assertEquals(data['success'], False)
+        self.assertEquals(data['message'], 'page not found')
+
+    def test_get_actor_not_found(self):
+        response = self.client().get('/actors/1000')
+        data = json.loads(response.data)
+
+        self.assertEquals(response.status_code, 404)
+        self.assertEquals(data['success'], False)
+        self.assertEquals(data['message'], 'page not found')
+
+    def test_create_actor_empty_form(self):
+        response = self.client().post('/actors/', json={})
+        data = json.loads(response.data)
+
+        self.assertEquals(response.status_code, 400)
+        self.assertEquals(data['success'], False)
+        self.assertEquals(data['message'], 'bad request')
+
+    def test_update_actor_not_found(self):
+        response = self.client().patch('/actors/1000', json={ 'name': 'bob' })
+        data = json.loads(response.data)
+
+        self.assertEquals(response.status_code, 404)
+        self.assertEquals(data['success'], False)
+        self.assertEquals(data['message'], 'page not found')
+
+    def test_update_actor_empty_form(self):
+        response = self.client().patch('/actors/1', json={})
+        data = json.loads(response.data)
+
+        self.assertEquals(response.status_code, 400)
+        self.assertEquals(data['success'], False)
+        self.assertEquals(data['message'], 'bad request')
+
+    def test_delete_actor_not_found(self):
+        response = self.client().delete('/actors/1000')
+        data = json.loads(response.data)
+
+        self.assertEquals(response.status_code, 422)
+        self.assertEquals(data['success'], False)
+        self.assertEquals(data['message'], 'unprocessable')
+
+
+    def test_get_movie_not_found(self):
+        response = self.client().get('/movies/1000')
+        data = json.loads(response.data)
+
+        self.assertEquals(response.status_code, 404)
+        self.assertEquals(data['success'], False)
+        self.assertEquals(data['message'], 'page not found')
+
+    def test_create_movie_empty_form(self):
+        response = self.client().post('/movies/', json={})
+        data = json.loads(response.data)
+
+        self.assertEquals(response.status_code, 400)
+        self.assertEquals(data['success'], False)
+        self.assertEquals(data['message'], 'bad request')
+
+    def test_create_movie_no_title(self):
+        response = self.client().post('/movies/', json={ 'release_date': '2000-01-01'})
+        data = json.loads(response.data)
+
+        self.assertEquals(response.status_code, 400)
+        self.assertEquals(data['success'], False)
+        self.assertEquals(data['message'], 'bad request')
+
+    def test_create_movie_no_release_date(self):
+        response = self.client().post('/movies/', json={ 'title': 'jaws' })
+        data = json.loads(response.data)
+
+        self.assertEquals(response.status_code, 400)
+        self.assertEquals(data['success'], False)
+        self.assertEquals(data['message'], 'bad request')
+
+    def test_update_movies_not_found(self):
+        response = self.client().patch('/movies/1000', json={ 'title': 'jaws' })
+        data = json.loads(response.data)
+
+        self.assertEquals(response.status_code, 404)
+        self.assertEquals(data['success'], False)
+        self.assertEquals(data['message'], 'page not found')
+
+    def test_update_movies_empty_form(self):
+        response = self.client().patch('/movies/1', json={})
+        data = json.loads(response.data)
+
+        self.assertEquals(response.status_code, 400)
+        self.assertEquals(data['success'], False)
+        self.assertEquals(data['message'], 'bad request')
+
+    def test_delete_movie_not_found(self):
+        response = self.client().delete('/movies/1000')
+        data = json.loads(response.data)
+
+        self.assertEquals(response.status_code, 422)
+        self.assertEquals(data['success'], False)
+        self.assertEquals(data['message'], 'unprocessable')
     # Make the tests conveniently executable
 if __name__ == "__main__":
     unittest.main()
