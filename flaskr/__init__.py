@@ -94,6 +94,8 @@ def create_app(test_config=None):
     def delete_actor(id):
         try:
             actor = Actor.query.get(id)
+            actor.movies = []
+            actor.update()
             actor.delete()
 
             return jsonify({
@@ -181,6 +183,8 @@ def create_app(test_config=None):
     def delete_movie(id):
         try:
             movie = Movie.query.get(id)
+            movie.actors = []
+            movie.update()
             movie.delete()
 
             return jsonify({
@@ -245,8 +249,9 @@ def create_app(test_config=None):
             'actor': actor.format()
         })
 
-    # Error handling
+    #TODO: Get actors for movies etc
 
+    # Error handling
     @app.errorhandler(404)
     def not_found(error):
         return jsonify({
