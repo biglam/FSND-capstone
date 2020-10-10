@@ -55,14 +55,23 @@ class Actor(db.Model):
             'id': self.id,
             'name': self.name,
             'age': self.age,
-            'gender': self.gender,
-            'movies': [movie.short_format() for movie in self.movies]
+            'gender': self.gender
         }
 
     def short_format(self):
         return {
             'id': self.id,
             'name': self.name
+        }
+
+    def full_details(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'age': self.age,
+            'gender': self.gender,
+            'movie_count': len(self.movies),
+            'movies': [movie.short_format() for movie in self.movies]
         }
 
 
@@ -73,8 +82,6 @@ class Movie(db.Model):
     title = db.Column(String, nullable=False, unique=True)
     release_date = db.Column(Date(), nullable=False)
     actors = db.relationship('Actor', secondary=actor_movies, backref=db.backref('actors'))
-
-    # TODO: Actors
 
     def insert(self):
         db.session.add(self)
@@ -95,12 +102,20 @@ class Movie(db.Model):
         return {
             'id': self.id,
             'title': self.title,
-            'release_date': self.release_date,
-            'actors': [actor.short_format() for actor in self.actors]
+            'release_date': self.release_date
         }
 
     def short_format(self):
         return {
             'id': self.id,
             'title': self.title
+        }
+
+    def full_details(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'release_date': self.release_date,
+            'actor_count': len(self.actors),
+            'actors': [actor.short_format() for actor in self.actors]
         }

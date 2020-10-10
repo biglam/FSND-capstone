@@ -1,10 +1,9 @@
-from flask import Flask, request, abort, jsonify, request
+from flask import Flask, abort, jsonify, request
 from datetime import datetime
-from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-
 from models import setup_db, Actor, Movie
 from auth.auth import AuthError, requires_auth
+
 
 def create_app(test_config=None):
     app = Flask(__name__)
@@ -60,7 +59,7 @@ def create_app(test_config=None):
             actor.insert()
             return jsonify({
                 'success': True,
-                'actor': actor.format()
+                'actor': actor.full_details()
             }), 201
         except:
             abort(422)
@@ -92,7 +91,7 @@ def create_app(test_config=None):
 
             return jsonify({
                 'success': True,
-                'actor': actor.format()
+                'actor': actor.full_details()
             })
         except:
             abort(422)
@@ -149,7 +148,7 @@ def create_app(test_config=None):
 
         movie = Movie(form.get('title'), release_date)
 
-        if (form.get('actors')):
+        if form.get('actors'):
             for actor_id in form.get('actors'):
                 actor = Actor.query.get(actor_id)
                 if actor:
@@ -159,7 +158,7 @@ def create_app(test_config=None):
         # TODO: Check if inserted
         return jsonify({
             'success': True,
-            'movie': movie.format()
+            'movie': movie.full_details()
         }), 201
 
     @app.route('/movies/<int:id>', methods=['PATCH'])
@@ -186,7 +185,7 @@ def create_app(test_config=None):
 
             return jsonify({
                 'success': True,
-                'movie': movie.format()
+                'movie': movie.full_details()
             })
         except:
             abort(422)
@@ -208,8 +207,7 @@ def create_app(test_config=None):
             abort(422)
 
     # Add/remove actors to/from movies
-
-    @app.route('/movies/<int:movie_id>/<int:actor_id>', methods=['POST'])
+    @app.route('/movies/<int:movie_id>/actors/<int:actor_id>', methods=['PUT'])
     @requires_auth('patch:movies')
     def add_actor_to_movie(jwt, movie_id, actor_id):
         movie = Movie.query.get(movie_id)
@@ -220,10 +218,10 @@ def create_app(test_config=None):
 
         return jsonify({
             'success': True,
-            'movie': movie.format()
+            'movie': movie.full_details()
         })
 
-    @app.route('/movies/<int:movie_id>/<int:actor_id>', methods=['DELETE'])
+    @app.route('/movies/<int:movie_id>/actors/<int:actor_id>', methods=['DELETE'])
     @requires_auth('patch:movies')
     def remove_actor_from_movie(jwt, movie_id, actor_id):
         movie = Movie.query.get(movie_id)
@@ -234,11 +232,11 @@ def create_app(test_config=None):
 
         return jsonify({
             'success': True,
-            'movie': movie.format()
+            'movie': movie.full_details()
         })
 
     # Add/remove movies to/from actors
-    @app.route('/actors/<int:actor_id>/<int:movie_id>', methods=['POST'])
+    @app.route('/actors/<int:actor_id>/movies/<int:movie_id>', methods=['PUT'])
     @requires_auth('patch:actors')
     def add_movie_to_actor(jwt, movie_id, actor_id):
         movie = Movie.query.get(movie_id)
@@ -249,10 +247,10 @@ def create_app(test_config=None):
 
         return jsonify({
             'success': True,
-            'actor': actor.format()
+            'actor': actor.full_details()
         })
 
-    @app.route('/actors/<int:actor_id>/<int:movie_id>', methods=['DELETE'])
+    @app.route('/actors/<int:actor_id>/movies/<int:movie_id>', methods=['DELETE'])
     @requires_auth('patch:actors')
     def remove_movie_from_actors(jwt, movie_id, actor_id):
         movie = Movie.query.get(movie_id)
@@ -263,10 +261,8 @@ def create_app(test_config=None):
 
         return jsonify({
             'success': True,
-            'actor': actor.format()
+            'actor': actor.full_details()
         })
-
-    #TODO: Get actors for movies etc
 
     # Error handling
     @app.errorhandler(404)

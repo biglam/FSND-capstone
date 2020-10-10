@@ -2,17 +2,13 @@ import os
 import unittest
 import json
 from flask_sqlalchemy import SQLAlchemy
-from datetime import date
-
 from flaskr import create_app
-from models import setup_db, Actor, Movie
-
+from models import setup_db
 
 def generateAuthHeaders(jwt):
     return {
         'Authorization': 'Bearer ' + jwt
     }
-
 
 class MovieActorsTestCase(unittest.TestCase):
 
@@ -37,7 +33,7 @@ class MovieActorsTestCase(unittest.TestCase):
             self.db.create_all()
 
     def tearDown(self):
-        """Executed after reach test"""
+        """Executed after each test"""
         pass
 
     # Happy path tests
@@ -51,7 +47,6 @@ class MovieActorsTestCase(unittest.TestCase):
         self.assertEquals(len(data['movies']), 4)
         self.assertTrue(data['movies'][0]['title'])
         self.assertTrue(data['movies'][0]['release_date'])
-        self.assertTrue(data['movies'][0]['actors'])
 
     def test_get_movie(self):
         response = self.client().get('/movies/1', headers=generateAuthHeaders(self.casting_assistant_jwt))
@@ -61,9 +56,6 @@ class MovieActorsTestCase(unittest.TestCase):
         self.assertEquals(data['success'], True)
         self.assertEquals(data['movie']['title'], 'movie 1')
         self.assertTrue(data['movie']['release_date']) # TODO: assert date
-        self.assertEquals(len(data['movie']['actors']), 2)
-        self.assertEquals(data['movie']['actors'][0]['name'], 'john')
-        self.assertEquals(data['movie']['actors'][1]['name'], 'anna')
 
     def test_create_movie(self):
         form = {
@@ -102,7 +94,7 @@ class MovieActorsTestCase(unittest.TestCase):
         self.assertEquals(data['deleted_id'], 5)
 
     def test_add_actor_to_movie(self):
-        response = self.client().post('/movies/2/3', headers=generateAuthHeaders(self.exec_producer_jwt))
+        response = self.client().put('/movies/2/actors/3', headers=generateAuthHeaders(self.exec_producer_jwt))
         data = json.loads(response.data)
 
         self.assertEquals(response.status_code, 200)
@@ -110,7 +102,7 @@ class MovieActorsTestCase(unittest.TestCase):
         self.assertEquals(data['movie']['actors'][3]['id'], 3)
 
     def test_remove_actor_from_movie(self):
-        response = self.client().delete('/movies/3/1', headers=generateAuthHeaders(self.exec_producer_jwt))
+        response = self.client().delete('/movies/3/actors/1', headers=generateAuthHeaders(self.exec_producer_jwt))
         data = json.loads(response.data)
 
         self.assertEquals(response.status_code, 200)
@@ -128,7 +120,6 @@ class MovieActorsTestCase(unittest.TestCase):
         self.assertTrue(data['actors'][0]['name'])
         self.assertTrue(data['actors'][0]['gender'])
         self.assertTrue(data['actors'][0]['age'])
-        self.assertEquals(len(data['actors'][0]['movies']), 2)
 
     def test_get_actor(self):
         response = self.client().get('/actors/1', headers=generateAuthHeaders(self.casting_assistant_jwt))
@@ -139,8 +130,6 @@ class MovieActorsTestCase(unittest.TestCase):
         self.assertEquals(data['actor']['name'], 'jim')
         self.assertEquals(data['actor']['age'], 50)
         self.assertEquals(data['actor']['gender'], 'male')
-        self.assertEquals(data['actor']['movies'][0]['title'], 'movie 2')
-        self.assertEquals(data['actor']['movies'][1]['title'], 'movie 3')
 
 
     def test_create_actor(self):
@@ -184,7 +173,7 @@ class MovieActorsTestCase(unittest.TestCase):
         self.assertEquals(data['deleted_id'], 5)
 
     def test_add_movie_to_actor(self):
-        response = self.client().post('/actors/2/4', headers=generateAuthHeaders(self.casting_director_jwt))
+        response = self.client().put('/actors/2/movies/4', headers=generateAuthHeaders(self.casting_director_jwt))
         data = json.loads(response.data)
 
         self.assertEquals(response.status_code, 200)
@@ -192,7 +181,7 @@ class MovieActorsTestCase(unittest.TestCase):
         self.assertEquals(data['actor']['movies'][2]['id'], 4)
 
     def test_remove_movie_from_actor(self):
-        response = self.client().delete('/actors/4/4', headers=generateAuthHeaders(self.casting_director_jwt))
+        response = self.client().delete('/actors/4/movies/4', headers=generateAuthHeaders(self.casting_director_jwt))
 
         data = json.loads(response.data)
 

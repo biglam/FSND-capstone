@@ -30,10 +30,10 @@ GET    '/actors/{actor id}' - lists a single actors data by id
 POST   '/actors/' - creates a new actor from a JSON form
 PATCH  '/actors/{actor id}' - updates a actors existing data
 DELETE '/actors/{actor id}' - deletes a actors record from the database
-POST   '/movie/{movie id}/{actor id}' - adds actor to movie
-DELETE '/movie/{movie id}/{actor id}' - removes actor from movie
-POST   '/actor/{actor id}/{movie id}' - adds movie to actor
-DELETE '/actor/{actor id}/{movie id}' - removes movie from actor
+PUT   '/movie/{movie id}/actor/{actor id}' - adds actor to movie
+DELETE '/movie/{movie id}/actor/{actor id}' - removes actor from movie
+PUT   '/actor/{actor id}/movie/{movie id}' - adds movie to actor
+DELETE '/actor/{actor id}/movie/{movie id}' - removes movie from actor
 ```
 
 **GET '/movies'**
@@ -44,57 +44,21 @@ DELETE '/actor/{actor id}/{movie id}' - removes movie from actor
 {
     "movies": [
         {
-            "actors": [
-                {
-                    "id": 2,
-                    "name": "john"
-                },
-                {
-                    "id": 4,
-                    "name": "anna"
-                }
-            ],
             "id": 1,
             "release_date": "Tue, 01 Feb 2000 00:00:00 GMT",
             "title": "movie 1"
         },
         {
-            "actors": [
-                {
-                    "id": 1,
-                    "name": "jim"
-                },
-                {
-                    "id": 2,
-                    "name": "john"
-                },
-                {
-                    "id": 4,
-                    "name": "anna"
-                }
-            ],
             "id": 2,
             "release_date": "Fri, 01 Feb 2002 00:00:00 GMT",
             "title": "movie 2"
         },
         {
-            "actors": [
-                {
-                    "id": 1,
-                    "name": "jim"
-                }
-            ],
             "id": 3,
             "release_date": "Thu, 21 Feb 1980 00:00:00 GMT",
             "title": "movie 3"
         },
         {
-            "actors": [
-                {
-                    "id": 4,
-                    "name": "anna"
-                }
-            ],
             "id": 4,
             "release_date": "Fri, 25 Dec 2020 00:00:00 GMT",
             "title": "xmas movie"
@@ -131,13 +95,22 @@ DELETE '/actor/{actor id}/{movie id}' - removes movie from actor
 ---
 **POST '/movies'**
 - Creates a new movie in the database using the provided data
-- Request Arguments (json formatted): 
-```JSON
-{
-    "title": "xmas movie",
-    "release_date": "2020-12-25"
-}
-```
+- Sample Requests: 
+    - Required Fields:
+        ```JSON
+        {
+            "title": "xmas movie",
+            "release_date": "2020-12-25"
+        }
+        ```
+    - With optional array of actor id's:
+         ```JSON
+        {
+            "title": "xmas movie",
+            "release_date": "2020-12-25",
+            "actors": [1, 2, 3]
+        }
+        ```
 - Returns: 
     - The ID and data of the newly created movie
 ```json
@@ -205,51 +178,24 @@ DELETE '/actor/{actor id}/{movie id}' - removes movie from actor
             "age": 50,
             "gender": "male",
             "id": 1,
-            "movies": [
-                {
-                    "id": 2,
-                    "title": "movie 2"
-                }
-            ],
             "name": "jim"
         },
         {
             "age": 21,
             "gender": "male",
             "id": 2,
-            "movies": [
-                {
-                    "id": 2,
-                    "title": "movie 2"
-                },
-                {
-                    "id": 1,
-                    "title": "movie 1"
-                }
-            ],
             "name": "john"
         },
         {
             "age": 24,
             "gender": "female",
             "id": 3,
-            "movies": [],
             "name": "jenny"
         },
         {
             "age": 60,
             "gender": "female",
             "id": 4,
-            "movies": [
-                {
-                    "id": 2,
-                    "title": "movie 2"
-                },
-                {
-                    "id": 1,
-                    "title": "movie 1"
-                }
-            ],
             "name": "anna"
         }
     ],
@@ -281,14 +227,25 @@ DELETE '/actor/{actor id}/{movie id}' - removes movie from actor
 ---
 **POST '/actors'**
 - Creates a new actor in the database using the provided data
-- Request Arguments (json formatted): 
-```JSON
-{
-    "name": "anna",
-    "age": 60,
-    "gender": "female"
-}
-```
+- Sample Requests (json formatted): 
+  - standard
+    ```JSON
+    {
+        "name": "anna",
+        "age": 60,
+        "gender": "female"
+    }
+    ```
+  - with optional array of movie id's
+      ```JSON
+    {
+        "name": "anna",
+        "age": 60,
+        "gender": "female",
+        "movies": [1, 2, 3]
+    }
+    ```
+
 - Returns: 
     - The ID and data of the newly created actor
 ```json
@@ -338,7 +295,7 @@ DELETE '/actor/{actor id}/{movie id}' - removes movie from actor
 }
 ```
 ---
-**POST '/movies/{movie id}/{actor id}'**
+**PUT '/movies/{movie id}/actors/{actor id}'**
 - Appends an actor to the movie 
 - Returns: 
     - The ID and data of the updated movie
@@ -359,7 +316,7 @@ DELETE '/actor/{actor id}/{movie id}' - removes movie from actor
 }
 ```
 ---
-**DELETE '/movies/{movie id}/{actor id}'**
+**DELETE '/movies/{movie id}/actors/{actor id}'**
 - Removes an actor from a movie 
 - Returns: 
     - The ID and data of the updated movie
@@ -375,7 +332,7 @@ DELETE '/actor/{actor id}/{movie id}' - removes movie from actor
 }
 ```
 ---
-**POST '/actors/{actor id}/{movie id}'**
+**PUT '/actors/{actor id}/movies/{movie id}'**
 - Appends an movie to the actor 
 - Returns: 
     - The ID and data of the updated actor
@@ -401,7 +358,7 @@ DELETE '/actor/{actor id}/{movie id}' - removes movie from actor
 }
 ```
 ---
-**DELETE '/actors/{actor id}/{movie id}'**
+**DELETE '/actors/{actor id}/movies/{movie id}'**
 - Removes an movie from a actor 
 - Returns: 
     - The ID and data of the updated actor
