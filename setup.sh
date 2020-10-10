@@ -1,7 +1,6 @@
 export FLASK_APP=app
 export FLASK_ENV=development
-export POSTGRES_USERNAME=lam
-export POSTGRES_PASSWORD=lam585
+export DATABASE_URL="postgres://lam:lam585@localhost:5432/capstone"
 
 sh ./postgres_env.sh
 flask run

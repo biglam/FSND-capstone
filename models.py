@@ -3,11 +3,8 @@ from sqlalchemy import Column, String, Integer, Date, create_engine
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
-postgres_username = os.environ.get('POSTGRES_USERNAME')
-postgres_password = os.environ.get('POSTGRES_PASSWORD')
-
 database_name = "capstone"
-database_path = "postgres://{}:{}@{}/{}".format(postgres_username, postgres_password, 'localhost:5432', database_name)
+database_path = os.environ.get('DATABASE_URL')
 
 db = SQLAlchemy()
 
