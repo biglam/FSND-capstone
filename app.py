@@ -306,3 +306,5 @@ def create_app(test_config=None):
         }), error.status_code
 
     return app
+
+app = create_app()
