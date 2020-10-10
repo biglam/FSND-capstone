@@ -22,7 +22,7 @@ This project comes with a unittest suite which covers all the basic endpoints an
 
 The required JWT's are also stored in [test.sh](./test.sh).
 
-Additionally, the API can be tested in postman using [capstone-tests-full.postman_collection.json](the supplied collection).
+Additionally, the API can be tested in postman using [the supplied collection](capstone-tests-full.postman_collection.json).
 
 ---
 ### Running the server 
