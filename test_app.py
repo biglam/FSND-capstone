@@ -43,9 +43,9 @@ class MovieActorsTestCase(unittest.TestCase):
         response = self.client().get('/movies', headers=generateAuthHeaders(casting_assistant_jwt))
         data = json.loads(response.data)
 
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(data['success'], True)
-        self.assertEquals(len(data['movies']), 4)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(len(data['movies']), 4)
         self.assertTrue(data['movies'][0]['title'])
         self.assertTrue(data['movies'][0]['release_date'])
 
@@ -53,10 +53,10 @@ class MovieActorsTestCase(unittest.TestCase):
         response = self.client().get('/movies/1', headers=generateAuthHeaders(casting_assistant_jwt))
         data = json.loads(response.data)
 
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(data['success'], True)
-        self.assertEquals(data['movie']['title'], 'movie 1')
-        self.assertEquals(data['movie']['release_date'], 'Tue, 01 Feb 2000 00:00:00 GMT')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['movie']['title'], 'movie 1')
+        self.assertEqual(data['movie']['release_date'], 'Tue, 01 Feb 2000 00:00:00 GMT')
 
     def test_create_movie(self):
         form = {
@@ -66,11 +66,11 @@ class MovieActorsTestCase(unittest.TestCase):
 
         response = self.client().post('/movies/', json=form, headers=generateAuthHeaders(exec_producer_jwt))
         data = json.loads(response.data)
-        self.assertEquals(response.status_code, 201)
-        self.assertEquals(data['success'], True)
-        self.assertEquals(data['movie']['id'], 5)
-        self.assertEquals(data['movie']['title'], 'foobar the movie')
-        self.assertEquals(data['movie']['release_date'], 'Thu, 31 Dec 2020 00:00:00 GMT')
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['movie']['id'], 5)
+        self.assertEqual(data['movie']['title'], 'foobar the movie')
+        self.assertEqual(data['movie']['release_date'], 'Thu, 31 Dec 2020 00:00:00 GMT')
 
     def test_update_movie(self):
         form = {
@@ -80,44 +80,44 @@ class MovieActorsTestCase(unittest.TestCase):
 
         response = self.client().patch('/movies/1', json=form, headers=generateAuthHeaders(exec_producer_jwt))
         data = json.loads(response.data)
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(data['success'], True)
-        self.assertEquals(data['movie']['id'], 1)
-        self.assertEquals(data['movie']['title'], 'baz the movie')
-        self.assertEquals(data['movie']['release_date'], 'Sun, 21 Nov 2021 00:00:00 GMT')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['movie']['id'], 1)
+        self.assertEqual(data['movie']['title'], 'baz the movie')
+        self.assertEqual(data['movie']['release_date'], 'Sun, 21 Nov 2021 00:00:00 GMT')
 
     def test_delete_movie(self):
         response = self.client().delete('/movies/5', headers=generateAuthHeaders(exec_producer_jwt))
         data = json.loads(response.data)
 
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(data['success'], True)
-        self.assertEquals(data['deleted_id'], 5)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['deleted_id'], 5)
 
     def test_add_actor_to_movie(self):
         response = self.client().put('/movies/2/actors/3', headers=generateAuthHeaders(exec_producer_jwt))
         data = json.loads(response.data)
 
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(data['success'], True)
-        self.assertEquals(data['movie']['actors'][3]['id'], 3)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['movie']['actors'][3]['id'], 3)
 
     def test_remove_actor_from_movie(self):
         response = self.client().delete('/movies/3/actors/1', headers=generateAuthHeaders(exec_producer_jwt))
         data = json.loads(response.data)
 
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(data['success'], True)
-        self.assertEquals(len(data['movie']['actors']), 0)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(len(data['movie']['actors']), 0)
 
     ## Actors
     def test_get_actors(self):
         response = self.client().get('/actors', headers=generateAuthHeaders(casting_assistant_jwt))
         data = json.loads(response.data)
 
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(data['success'], True)
-        self.assertEquals(len(data['actors']), 4)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(len(data['actors']), 4)
         self.assertTrue(data['actors'][0]['name'])
         self.assertTrue(data['actors'][0]['gender'])
         self.assertTrue(data['actors'][0]['age'])
@@ -126,11 +126,11 @@ class MovieActorsTestCase(unittest.TestCase):
         response = self.client().get('/actors/1', headers=generateAuthHeaders(casting_assistant_jwt))
         data = json.loads(response.data)
 
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(data['success'], True)
-        self.assertEquals(data['actor']['name'], 'jim')
-        self.assertEquals(data['actor']['age'], 50)
-        self.assertEquals(data['actor']['gender'], 'male')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['actor']['name'], 'jim')
+        self.assertEqual(data['actor']['age'], 50)
+        self.assertEqual(data['actor']['gender'], 'male')
 
     def test_create_actor(self):
         form = {
@@ -141,12 +141,12 @@ class MovieActorsTestCase(unittest.TestCase):
 
         response = self.client().post('/actors/', json=form, headers=generateAuthHeaders(casting_director_jwt))
         data = json.loads(response.data)
-        self.assertEquals(response.status_code, 201)
-        self.assertEquals(data['success'], True)
-        self.assertEquals(data['actor']['id'], 5)
-        self.assertEquals(data['actor']['name'], 'jill')
-        self.assertEquals(data['actor']['age'], 21)
-        self.assertEquals(data['actor']['gender'], 'female')
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['actor']['id'], 5)
+        self.assertEqual(data['actor']['name'], 'jill')
+        self.assertEqual(data['actor']['age'], 21)
+        self.assertEqual(data['actor']['gender'], 'female')
 
     #
     def test_update_actor(self):
@@ -158,37 +158,37 @@ class MovieActorsTestCase(unittest.TestCase):
 
         response = self.client().patch('/actors/2', json=form, headers=generateAuthHeaders(casting_director_jwt))
         data = json.loads(response.data)
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(data['success'], True)
-        self.assertEquals(data['actor']['id'], 2)
-        self.assertEquals(data['actor']['name'], 'jimmy')
-        self.assertEquals(data['actor']['age'], 25)
-        self.assertEquals(data['actor']['gender'], 'male')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['actor']['id'], 2)
+        self.assertEqual(data['actor']['name'], 'jimmy')
+        self.assertEqual(data['actor']['age'], 25)
+        self.assertEqual(data['actor']['gender'], 'male')
 
     def test_delete_actor(self):
         response = self.client().delete('/actors/5', headers=generateAuthHeaders(casting_director_jwt))
         data = json.loads(response.data)
 
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(data['success'], True)
-        self.assertEquals(data['deleted_id'], 5)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['deleted_id'], 5)
 
     def test_add_movie_to_actor(self):
         response = self.client().put('/actors/2/movies/4', headers=generateAuthHeaders(casting_director_jwt))
         data = json.loads(response.data)
 
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(data['success'], True)
-        self.assertEquals(data['actor']['movies'][2]['id'], 4)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['actor']['movies'][2]['id'], 4)
 
     def test_remove_movie_from_actor(self):
         response = self.client().delete('/actors/4/movies/4', headers=generateAuthHeaders(casting_director_jwt))
 
         data = json.loads(response.data)
 
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(data['success'], True)
-        self.assertEquals(len(data['actor']['movies']), 2)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(len(data['actor']['movies']), 2)
 
     # Authorisation
     def test_create_movie_when_casting_assistant(self):
@@ -199,10 +199,10 @@ class MovieActorsTestCase(unittest.TestCase):
 
         response = self.client().post('/movies/', json=form, headers=generateAuthHeaders(casting_assistant_jwt))
         data = json.loads(response.data)
-        self.assertEquals(response.status_code, 403)
-        self.assertEquals(data['success'], False)
-        self.assertEquals(data['message']['code'], 'unauthorised')
-        self.assertEquals(data['message']['description'], 'unauthorised for this resource')
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message']['code'], 'unauthorised')
+        self.assertEqual(data['message']['description'], 'unauthorised for this resource')
 
     def test_create_movie_when_casting_director(self):
         form = {
@@ -212,10 +212,10 @@ class MovieActorsTestCase(unittest.TestCase):
 
         response = self.client().post('/movies/', json=form, headers=generateAuthHeaders(casting_director_jwt))
         data = json.loads(response.data)
-        self.assertEquals(response.status_code, 403)
-        self.assertEquals(data['success'], False)
-        self.assertEquals(data['message']['code'], 'unauthorised')
-        self.assertEquals(data['message']['description'], 'unauthorised for this resource')
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message']['code'], 'unauthorised')
+        self.assertEqual(data['message']['description'], 'unauthorised for this resource')
 
     def test_update_movie_when_casting_assistant(self):
         form = {
@@ -225,28 +225,28 @@ class MovieActorsTestCase(unittest.TestCase):
 
         response = self.client().patch('/movies/1', json=form, headers=generateAuthHeaders(casting_assistant_jwt))
         data = json.loads(response.data)
-        self.assertEquals(response.status_code, 403)
-        self.assertEquals(data['success'], False)
-        self.assertEquals(data['message']['code'], 'unauthorised')
-        self.assertEquals(data['message']['description'], 'unauthorised for this resource')
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message']['code'], 'unauthorised')
+        self.assertEqual(data['message']['description'], 'unauthorised for this resource')
 
     def test_delete_movie_when_casting_assistant(self):
         response = self.client().delete('/movies/5', headers=generateAuthHeaders(casting_assistant_jwt))
         data = json.loads(response.data)
 
-        self.assertEquals(response.status_code, 403)
-        self.assertEquals(data['success'], False)
-        self.assertEquals(data['message']['code'], 'unauthorised')
-        self.assertEquals(data['message']['description'], 'unauthorised for this resource')
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message']['code'], 'unauthorised')
+        self.assertEqual(data['message']['description'], 'unauthorised for this resource')
 
     def test_delete_movie_when_casting_director(self):
         response = self.client().delete('/movies/5', headers=generateAuthHeaders(casting_director_jwt))
         data = json.loads(response.data)
 
-        self.assertEquals(response.status_code, 403)
-        self.assertEquals(data['success'], False)
-        self.assertEquals(data['message']['code'], 'unauthorised')
-        self.assertEquals(data['message']['description'], 'unauthorised for this resource')
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message']['code'], 'unauthorised')
+        self.assertEqual(data['message']['description'], 'unauthorised for this resource')
 
     def test_create_actor_when_casting_assistant(self):
         form = {
@@ -257,10 +257,10 @@ class MovieActorsTestCase(unittest.TestCase):
 
         response = self.client().post('/actors/', json=form, headers=generateAuthHeaders(casting_assistant_jwt))
         data = json.loads(response.data)
-        self.assertEquals(response.status_code, 403)
-        self.assertEquals(data['success'], False)
-        self.assertEquals(data['message']['code'], 'unauthorised')
-        self.assertEquals(data['message']['description'], 'unauthorised for this resource')
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message']['code'], 'unauthorised')
+        self.assertEqual(data['message']['description'], 'unauthorised for this resource')
 
     def test_update_actor_when_casting_assistant(self):
         form = {
@@ -272,128 +272,128 @@ class MovieActorsTestCase(unittest.TestCase):
         response = self.client().patch('/actors/2', json=form,
                                        headers=generateAuthHeaders(casting_assistant_jwt))
         data = json.loads(response.data)
-        self.assertEquals(response.status_code, 403)
-        self.assertEquals(data['success'], False)
-        self.assertEquals(data['message']['code'], 'unauthorised')
-        self.assertEquals(data['message']['description'], 'unauthorised for this resource')
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message']['code'], 'unauthorised')
+        self.assertEqual(data['message']['description'], 'unauthorised for this resource')
 
     def test_delete_actor_when_casting_assistant(self):
         response = self.client().delete('/actors/5', headers=generateAuthHeaders(casting_assistant_jwt))
         data = json.loads(response.data)
 
-        self.assertEquals(response.status_code, 403)
-        self.assertEquals(data['success'], False)
-        self.assertEquals(data['message']['code'], 'unauthorised')
-        self.assertEquals(data['message']['description'], 'unauthorised for this resource')
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message']['code'], 'unauthorised')
+        self.assertEqual(data['message']['description'], 'unauthorised for this resource')
 
     # Error handling
     def test_page_not_found(self):
         response = self.client().get('/fakepage', headers=generateAuthHeaders(exec_producer_jwt))
         data = json.loads(response.data)
 
-        self.assertEquals(response.status_code, 404)
-        self.assertEquals(data['success'], False)
-        self.assertEquals(data['message'], 'page not found')
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'page not found')
 
     def test_get_actor_not_found(self):
         response = self.client().get('/actors/1000', headers=generateAuthHeaders(exec_producer_jwt))
         data = json.loads(response.data)
 
-        self.assertEquals(response.status_code, 404)
-        self.assertEquals(data['success'], False)
-        self.assertEquals(data['message'], 'page not found')
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'page not found')
 
     def test_create_actor_empty_form(self):
         response = self.client().post('/actors/', json={}, headers=generateAuthHeaders(exec_producer_jwt))
         data = json.loads(response.data)
 
-        self.assertEquals(response.status_code, 400)
-        self.assertEquals(data['success'], False)
-        self.assertEquals(data['message'], 'bad request')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'bad request')
 
     def test_update_actor_not_found(self):
         response = self.client().patch('/actors/1000', json={'name': 'bob'},
                                        headers=generateAuthHeaders(exec_producer_jwt))
         data = json.loads(response.data)
 
-        self.assertEquals(response.status_code, 404)
-        self.assertEquals(data['success'], False)
-        self.assertEquals(data['message'], 'page not found')
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'page not found')
 
     def test_update_actor_empty_form(self):
         response = self.client().patch('/actors/1', json={}, headers=generateAuthHeaders(exec_producer_jwt))
         data = json.loads(response.data)
 
-        self.assertEquals(response.status_code, 400)
-        self.assertEquals(data['success'], False)
-        self.assertEquals(data['message'], 'bad request')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'bad request')
 
     def test_delete_actor_not_found(self):
         response = self.client().delete('/actors/1000', headers=generateAuthHeaders(exec_producer_jwt))
         data = json.loads(response.data)
 
-        self.assertEquals(response.status_code, 422)
-        self.assertEquals(data['success'], False)
-        self.assertEquals(data['message'], 'unprocessable')
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'unprocessable')
 
     def test_get_movie_not_found(self):
         response = self.client().get('/movies/1000', headers=generateAuthHeaders(exec_producer_jwt))
         data = json.loads(response.data)
 
-        self.assertEquals(response.status_code, 404)
-        self.assertEquals(data['success'], False)
-        self.assertEquals(data['message'], 'page not found')
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'page not found')
 
     def test_create_movie_empty_form(self):
         response = self.client().post('/movies/', json={}, headers=generateAuthHeaders(exec_producer_jwt))
         data = json.loads(response.data)
 
-        self.assertEquals(response.status_code, 400)
-        self.assertEquals(data['success'], False)
-        self.assertEquals(data['message'], 'bad request')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'bad request')
 
     def test_create_movie_no_title(self):
         response = self.client().post('/movies/', json={'release_date': '2000-01-01'},
                                       headers=generateAuthHeaders(exec_producer_jwt))
         data = json.loads(response.data)
 
-        self.assertEquals(response.status_code, 400)
-        self.assertEquals(data['success'], False)
-        self.assertEquals(data['message'], 'bad request')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'bad request')
 
     def test_create_movie_no_release_date(self):
         response = self.client().post('/movies/', json={'title': 'jaws'},
                                       headers=generateAuthHeaders(exec_producer_jwt))
         data = json.loads(response.data)
 
-        self.assertEquals(response.status_code, 400)
-        self.assertEquals(data['success'], False)
-        self.assertEquals(data['message'], 'bad request')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'bad request')
 
     def test_update_movies_not_found(self):
         response = self.client().patch('/movies/1000', json={'title': 'jaws'},
                                        headers=generateAuthHeaders(exec_producer_jwt))
         data = json.loads(response.data)
 
-        self.assertEquals(response.status_code, 404)
-        self.assertEquals(data['success'], False)
-        self.assertEquals(data['message'], 'page not found')
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'page not found')
 
     def test_update_movies_empty_form(self):
         response = self.client().patch('/movies/1', json={}, headers=generateAuthHeaders(exec_producer_jwt))
         data = json.loads(response.data)
 
-        self.assertEquals(response.status_code, 400)
-        self.assertEquals(data['success'], False)
-        self.assertEquals(data['message'], 'bad request')
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'bad request')
 
     def test_delete_movie_not_found(self):
         response = self.client().delete('/movies/1000', headers=generateAuthHeaders(exec_producer_jwt))
         data = json.loads(response.data)
 
-        self.assertEquals(response.status_code, 422)
-        self.assertEquals(data['success'], False)
-        self.assertEquals(data['message'], 'unprocessable')
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'unprocessable')
     # Make the tests conveniently executable
 
 
