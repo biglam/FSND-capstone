@@ -3,9 +3,16 @@ Heroku URL: https://fsnd-capstone-clamont.herokuapp.com/
 
 ## Getting started
 ### Installing dependencies
-This project requires Python and pip. Once these are available, the dependencies can all be installed by running:
+This project requires Python and pip. Once these are available, the dependencies can all be installed in an virtual environment by running:
 ```bash
+python3 -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
+```
+Once the dependencies are installed, the database can be set up with
+```bash
+createdb capstone
+flask db upgrade
 ```
 ---
 ### Running Tests
@@ -13,7 +20,9 @@ This project comes with a unittest suite which covers all the basic endpoints an
 1. Open [test.sh](./test.sh) in your editor, and update the ```USERNAME:PASSWORD``` to match your postgres setup
 2. Execute ```sh ./test.sh```
 
-The required JWT's are also stored in [test.sh](./test.sh)
+The required JWT's are also stored in [test.sh](./test.sh).
+
+Additionally, the API can be tested in postman using [capstone-tests-full.postman_collection.json](the supplied collection).
 
 ---
 ### Running the server 
