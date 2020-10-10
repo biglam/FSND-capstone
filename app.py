@@ -49,7 +49,7 @@ def create_app(test_config=None):
 
         actor = Actor(name, age, gender)
 
-        if (movies):
+        if movies:
             for movie_id in form.get('movies'):
                 movie = Movie.query.get(movie_id)
                 if movie:
