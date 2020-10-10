@@ -20,10 +20,12 @@ def setup_db(app, database_path=database_path):
     # db.create_all()
     migrate = Migrate(app, db)
 
+
 actor_movies = db.Table('actor_movies',
-    Column('actor_id', db.Integer, db.ForeignKey('actors.id'), primary_key=True),
-    Column('movie_id', db.Integer, db.ForeignKey('movies.id'), primary_key=True)
-)
+                        Column('actor_id', db.Integer, db.ForeignKey('actors.id'), primary_key=True),
+                        Column('movie_id', db.Integer, db.ForeignKey('movies.id'), primary_key=True)
+                        )
+
 
 class Actor(db.Model):
     __tablename__ = 'actors'

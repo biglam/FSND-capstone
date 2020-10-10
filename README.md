@@ -3,19 +3,18 @@
 ## Getting started
 
 ### Installing dependencies
-
+This project requires Python and pip. Once these are available, the dependencies can all be installed by running:
 ```bash
 pip install -r requirements.txt
 ```
 
 ### Running the server 
+There is a bash script included to start the server. To use, edit the POSTGRES_USERNAME and POSTGRES_PASSWORD values in ```setup.sh``` and run:
 ```bash
-export POSTGRES_USERNAME=*postgres username*
-export POSTGRES_PASSWORD=*postgres password*
-export FLASK_APP=flaskr
-export FLASK_ENV=development
-flask run
+    sh ./setup.sh
 ```
+Note that this starts the server in development mode.
+
 ---
 ## Endpoints
 
